@@ -29,11 +29,11 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <TextBox Height="72" HorizontalAlignment="Left" Margin="144,68,0,0" Name="usernameBox" Text="leyzby2" VerticalAlignment="Top" Width="258" />
+            <TextBox Height="72" HorizontalAlignment="Left" Margin="144,68,0,0" Name="usernameBox" Text="guest" VerticalAlignment="Top" Width="258" />
             <TextBlock Height="30" HorizontalAlignment="Left" Margin="62,89,0,0" Name="textBlock1" Text="用户名" VerticalAlignment="Top" />
             <TextBlock Height="30" HorizontalAlignment="Left" Margin="62,188,0,0" Name="textBlock2" Text="密码" VerticalAlignment="Top" />
             <Button Content="登陆" Height="72" HorizontalAlignment="Left" Margin="144,285,0,0" Name="loginButton" VerticalAlignment="Top" Width="160" Click="loginButton_Click" />
-            <PasswordBox Height="72" HorizontalAlignment="Left" Margin="144,170,0,0" Name="passwordBox" VerticalAlignment="Top" Width="258" Password="apitest" />
+            <PasswordBox Height="72" HorizontalAlignment="Left" Margin="144,170,0,0" Name="passwordBox" VerticalAlignment="Top" Width="258" Password="" />
         </Grid>
     </Grid>
 

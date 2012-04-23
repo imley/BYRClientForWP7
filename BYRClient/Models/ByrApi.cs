@@ -34,6 +34,11 @@ namespace BYRClient.Models
             return _accountSid;
         }
 
+        public string getPassword()
+        {
+            return _secretKey;
+        }
+
         public void SetAuthinfo(string accountSid, string secretKey)
         {
             _accountSid = accountSid;
@@ -51,7 +56,9 @@ namespace BYRClient.Models
             {
                 if (response.ResponseStatus == ResponseStatus.Error)
                 {
+                    response.ErrorException.ToString();
                     failure(response.ErrorMessage);
+                    
                 }
                 else
                 {

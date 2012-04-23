@@ -61,6 +61,7 @@
     <Reference Include="RestSharp.WindowsPhone">
       <HintPath>..\..\..\..\..\..\Dropbox\Devs\WindowsPhone\libraries\RestSharp\WindowsPhone\7.1\RestSharp.WindowsPhone.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
@@ -76,6 +77,9 @@
       <DependentUpon>BoardPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Threads.cs" />
+    <Compile Include="PopupSplash.xaml.cs">
+      <DependentUpon>PopupSplash.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ThreadsPage.xaml.cs">
       <DependentUpon>ThreadsPage.xaml</DependentUpon>
     </Compile>
@@ -109,6 +113,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="PopupSplash.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ThreadsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -137,7 +145,9 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Images\next.png" />
+    <Content Include="Images\next.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\back.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

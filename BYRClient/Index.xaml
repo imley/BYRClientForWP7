@@ -71,7 +71,7 @@
             <shell:ApplicationBarIconButton IconUri="/Images/back.png" Text="logout" Click="Logout_Click"/>
             <shell:ApplicationBarIconButton IconUri="/Images/play.png" Text="test" Click="Test_Click"/>
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+                <shell:ApplicationBarMenuItem Text="清空分区列表缓存" Click="OnClearClick"/>
                 <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>

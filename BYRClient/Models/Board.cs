@@ -13,21 +13,26 @@ using RestSharp;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 
 namespace BYRClient.Models
 {
+    [DataContract]
     public class Board : ApiModel
     {
         private string name;
         private string description;
         private string section;
         private List<Article> article;
+        private Pagination pagination;
 
+        [IgnoreDataMember]
         public ObservableCollection<UIArticleItem> GUIArticles { set; get; }
 
 
         #region accessor      
        
+        [DataMember]
         public string Name
         {
             get
@@ -44,6 +49,7 @@ namespace BYRClient.Models
             }
         }
 
+        [DataMember]
         public string Description
         {
             get
@@ -74,7 +80,22 @@ namespace BYRClient.Models
                     NotifyPropertyChanged("Section");
                 }
             }
+        }
 
+        public Pagination Pagination
+        {
+            get
+            {
+                return pagination;
+            }
+            set
+            {
+                if (value != pagination)
+                {
+                    pagination = value;
+                    NotifyPropertyChanged("Pagination");
+                }
+            }
         }
 
         public List<Article> Article
@@ -107,12 +128,14 @@ namespace BYRClient.Models
         }
 
 
-        public void GetBoardInfo(string boardName)
+        public void GetBoardInfo(string boardName, int count, int page)
         {
             var request = new RestRequest();
-            request.Resource = "board/{boardName}.json";
+            request.Resource = "board/{boardName}.xml";
 
             request.AddParameter("boardName", boardName, ParameterType.UrlSegment);
+            request.AddParameter("count", count); // too much content takes too long time.
+            request.AddParameter("page", page); // too much content takes too long time.
             App.api.Execute<Board>(request, SetData, FailOnRequest);
         }
     }

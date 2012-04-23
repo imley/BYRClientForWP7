@@ -13,25 +13,52 @@ using Microsoft.Phone.Controls;
 using System.Windows.Navigation;
 using System.ComponentModel;
 using BYRClient.Models;
+using System.Windows.Controls.Primitives;
 
 namespace BYRClient
 {
     public partial class BoardPage : PhoneApplicationPage
     {
+        private Popup popup;
+        private static Board currentData = null;
+
         public BoardPage()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             string boardName = this.NavigationContext.QueryString["board"];
+            int page;
+            if (this.NavigationContext.QueryString.ContainsKey("page"))
+            {
+                page = int.Parse(this.NavigationContext.QueryString["page"]);
+            }
+            else
+            {
+                page = 1;
+            }
 
-            Board board = new Board();
-            board.GetBoardInfo(boardName);
+            Board board;
+            if (App.IsRecovered == true && currentData != null)
+            {
+                board = currentData;
+                App.IsRecovered = false;
+            }
+            else
+            {
+                ShowPopup();
+                board = new Board();
+                board.GetBoardInfo(boardName, 10, page);
+                board.RelatedPop = this.popup;
+                
+            }
+
             DataContext = board;
-
             boardList.ItemsSource = board.GUIArticles;
+
+            currentData = board;
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
@@ -41,6 +68,18 @@ namespace BYRClient
             e.Cancel = true;
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            this.popup.IsOpen = false;
+        }
+
+        private void ShowPopup()
+        {
+            this.popup = new Popup();
+            this.popup.Child = new PopupSplash(); 
+            this.popup.IsOpen = true;
+        }
+
         private void articleList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UIArticleItem selectedItem;
@@ -48,6 +87,19 @@ namespace BYRClient
             selectedItem.Color = "Red";
 
             this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?id=" + selectedItem.Article.Id + "&board=" + selectedItem.Article.Board_name, UriKind.Relative));            
+        }
+
+        private void OnNextPageClick(object sender, EventArgs e)
+        {
+            if(currentData.Pagination.Page_current_count < currentData.Pagination.Page_all_count)
+                this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + currentData.Name + "&page=" + (currentData.Pagination.Page_current_count + 1), UriKind.Relative));
+            //currentData.GetBoardInfo(currentData.Name, 10, currentData.Pagination.Page_current_count+1);
+        }
+
+        private void OnPreviousPageClick(object sender, EventArgs e)
+        {
+            if (currentData.Pagination.Page_current_count > 1)
+                this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + currentData.Name + "&page=" + (currentData.Pagination.Page_current_count - 1), UriKind.Relative));
         }
     }
 }

@@ -13,9 +13,11 @@ using RestSharp;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 
 namespace BYRClient.Models
 {
+    [DataContract]
     public class Section : ApiModel
     {
         public static Dictionary<string, Models.Section> cache = new Dictionary<string, Models.Section>();
@@ -28,10 +30,12 @@ namespace BYRClient.Models
         private List<Board> board;
 
         //public ObservableCollection<string> GUISub_section{set;get;}
+        [IgnoreDataMember]
         public ObservableCollection<UISectionItem> GUISub_section { set; get; }
 
         #region accessor
 
+        [DataMember]
         public string Name
         {
             get
@@ -48,6 +52,7 @@ namespace BYRClient.Models
             }
         }
 
+        [DataMember]
         public string Description 
         {
             get {
@@ -62,6 +67,7 @@ namespace BYRClient.Models
             }
         }
 
+        [DataMember]
         public string Parent
         {
             get
@@ -96,6 +102,7 @@ namespace BYRClient.Models
 
         }
 
+        [DataMember]
         public List<string> Sub_section
         {
             get
@@ -108,7 +115,11 @@ namespace BYRClient.Models
                 {
                     sub_section = value;
                     NotifyPropertyChanged("Sub_section");
-                   
+
+                    if (GUISub_section == null)
+                    {
+                        GUISub_section = new ObservableCollection<UISectionItem>();
+                    }
                     GUISub_section.Clear();
                     foreach (string section in sub_section)
                     {
@@ -133,6 +144,7 @@ namespace BYRClient.Models
             }
         }
 
+        [DataMember]
         public List<Board> Board
         {
             get
@@ -147,6 +159,10 @@ namespace BYRClient.Models
                     NotifyPropertyChanged("Board");
 
                     //GUISub_section.Clear();
+                    if (GUISub_section == null)
+                    {
+                        GUISub_section = new ObservableCollection<UISectionItem>();
+                    }
                     foreach (Board b in board)
                     {
                         if (b != null)

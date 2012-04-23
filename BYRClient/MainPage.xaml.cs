@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
+using System.IO.IsolatedStorage;
 
 namespace BYRClient
 {
@@ -19,6 +20,15 @@ namespace BYRClient
         public MainPage()
         {
             InitializeComponent();
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            string user;
+            string pass;
+            settings.TryGetValue("username", out user);
+            settings.TryGetValue("password", out pass);
+            if (user == null) user = "guest";
+            if (pass == null) pass = "";
+            usernameBox.Text = user;
+            passwordBox.Password = pass;
         }
 
         private void loginButton_Click(object sender, RoutedEventArgs e)

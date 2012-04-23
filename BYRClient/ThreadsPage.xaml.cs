@@ -13,26 +13,56 @@ using Microsoft.Phone.Controls;
 using System.Windows.Navigation;
 using System.ComponentModel;
 using BYRClient.Models;
+using System.Windows.Controls.Primitives;
 
 namespace BYRClient
 {
     public partial class ThreadsPage : PhoneApplicationPage
     {
+        private Popup popup;
+        //private static Dictionary<string, Threads> currentPage = new Dictionary<string, Threads>();
+        private static Threads currentData = null;
+
         public ThreadsPage()
         {
             InitializeComponent();
         }
 
+        
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             string id = this.NavigationContext.QueryString["id"];
             string board = this.NavigationContext.QueryString["board"];
-
-            Threads t = new Threads();
-            t.GetThreadsInfo(id, board);
+            int page = 1;
+            if (this.NavigationContext.QueryString.ContainsKey("page"))
+            {
+                page = int.Parse(this.NavigationContext.QueryString["page"]);
+            }
+            //TO-DO: DRY, DRY!!!
+            Threads t;            
+            if (App.IsRecovered == true && currentData != null)
+            {
+                t = currentData;
+                App.IsRecovered = false;
+            }
+            else 
+            {
+                ShowPopup();
+                t = new Threads();
+                t.GetThreadsInfo(id, board, page);
+                t.RelatedPop = this.popup;                
+            }            
+            
             DataContext = t;
-
             boardList.ItemsSource = t.GUIArticles;
+
+            currentData = t;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            this.popup.IsOpen = false;
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
@@ -42,13 +72,28 @@ namespace BYRClient
             e.Cancel = true;
         }
 
-        private void articleList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ShowPopup()
         {
-            UIArticleItem selectedItem;
-            selectedItem = (UIArticleItem)boardList.SelectedItem;
-            selectedItem.Color = "Red";
-            
-            //this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?id=" + selectedItem.Article.Id, UriKind.Relative));            
+            this.popup = new Popup();
+            this.popup.Child = new PopupSplash();
+            this.popup.IsOpen = true;
+        }
+
+        private void articleList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {    
+        }
+
+        private void OnNextPageClick(object sender, EventArgs e)
+        {
+            if(currentData.Pagination.Page_current_count < currentData.Pagination.Page_all_count)
+                this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?board=" + currentData.Board_name + "&id=" + currentData.Id + "&page=" + (currentData.Pagination.Page_current_count+1), UriKind.Relative));
+            //currentData.GetThreadsInfo(currentData.Id.ToString(), currentData.Board_name, currentData.Pagination.Page_current_count + 1);
+        }
+
+        private void OnPreviousPageClick(object sender, EventArgs e)
+        {
+            if (currentData.Pagination.Page_current_count > 1)
+                this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?board=" + currentData.Board_name + "&id=" + currentData.Id + "&page=" + (currentData.Pagination.Page_current_count - 1), UriKind.Relative));
         }
     }
 }

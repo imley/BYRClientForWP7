@@ -11,13 +11,29 @@ using System.Windows.Shapes;
 using System.Reflection;
 using RestSharp;
 using System.ComponentModel;
+using System.Windows.Controls.Primitives;
+using System.Runtime.Serialization;
+using System.Windows.Navigation;
 
 namespace BYRClient.Models
 {
+    [DataContract]
     public class ApiModel : INotifyPropertyChanged
     {
-
         public event PropertyChangedEventHandler PropertyChanged;
+        public Popup RelatedPop { get; set; }
+        private bool failed = false;
+        public bool Failed 
+        { 
+            get
+            {
+                return failed;
+            }
+            set
+            {
+                failed = value;
+            } 
+        }
 
         /// <summary>
         /// Raise the PropertyChanged event and pass along the property that changed
@@ -30,9 +46,15 @@ namespace BYRClient.Models
             }
         }
 
+        protected void SetIsDone()
+        {
+            if (this.RelatedPop != null)
+                this.RelatedPop.IsOpen = false;
+        }
+
         public void FailOnRequest(String error)
         {
-            Console.Write('e');
+            this.Failed = true;
         }
 
         public void SetData<T>(T actual)
@@ -43,7 +65,8 @@ namespace BYRClient.Models
                 {
                     PropertyInfo propertyS = this.GetType().GetProperty(property.Name);
                     var value = property.GetValue(actual, null);
-                    propertyS.SetValue(this, value, null);
+                    propertyS.SetValue(this, value, null);                    
+                    this.SetIsDone();
                 }
             }
         }

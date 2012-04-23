@@ -60,7 +60,7 @@ namespace BYRClient
             }
             else if (selectedItem.Type == "board")
             {
-                this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + selectedItem.Id, UriKind.Relative));
+                this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + selectedItem.Id + "&page=1", UriKind.Relative));
             }
             /*
             selectedItem = (UISectionItem)sectionList.SelectedItem;

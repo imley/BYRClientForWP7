@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System.Reflection;
 using RestSharp;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace BYRClient.Models
 {
@@ -21,7 +22,9 @@ namespace BYRClient.Models
         private string content;
         private string title;
         private string board_name;
+        private int reply_count;
         private User user;
+        public ObservableCollection<string> GUIPieceList { set; get; }
 
         #region accessor      
        
@@ -67,6 +70,22 @@ namespace BYRClient.Models
                 {
                     content = value;
                     NotifyPropertyChanged("Content");
+                    string tmp = content;
+                    while (tmp.Length > 0)
+                    {                        
+                        try
+                        {
+                            string piece = tmp.Substring(0, 800);
+                            GUIPieceList.Add(piece);
+                            tmp = tmp.Remove(0, 800);
+                        }
+                        catch (System.ArgumentOutOfRangeException e)
+                        {
+                            Console.Write(tmp);
+                            GUIPieceList.Add(tmp);
+                            tmp = "";
+                        }
+                    }
                 }
             }
         }
@@ -103,6 +122,22 @@ namespace BYRClient.Models
             }
         }
 
+        public int Reply_count
+        {
+            get
+            {
+                return reply_count;
+            }
+            set
+            {
+                if (value != reply_count)
+                {
+                    reply_count = value;
+                    NotifyPropertyChanged("Reply_count");
+                }
+            }
+        }
+
         public User User
         {
             get
@@ -120,6 +155,11 @@ namespace BYRClient.Models
         }
 
         #endregion
+
+        public Article()
+        {
+            GUIPieceList = new ObservableCollection<string>();
+        }
 
 
         public void GetUserInfo(string id)

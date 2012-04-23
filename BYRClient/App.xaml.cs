@@ -13,12 +13,15 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using BYRClient.Models;
+using System.IO.IsolatedStorage;
 
 namespace BYRClient
 {
     public partial class App : Application
     {
         public static ByrApi api;
+        public static UIArticleItem CurrentThread;
+        public static bool IsRecovered = false;
 
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
@@ -66,24 +69,57 @@ namespace BYRClient
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            string user;
+            string pass;
+            settings.TryGetValue("username", out user);
+            settings.TryGetValue("password", out pass);
+            if (user == null) user = "guest";
+            if (pass == null) pass = "";
+            api = new ByrApi(user, pass);
+            LoadSectionCache();
         }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            App.IsRecovered = true;
+            if (e.IsApplicationInstancePreserved)
+            {
+                PhoneApplicationService.Current.State.Clear();
+            }
+            else
+            {
+                //ViewModelLocator.NavigationService.RecoveredFromTombstoning = true;
+            }
         }
 
         // Code to execute when the application is deactivated (sent to background)
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            //PhoneApplicationService.Current.State["CurrentPage"] = App.CurrentPage;            
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            if (settings.Contains("username"))
+            {
+                settings.Remove("username");
+            }
+            settings.Add("username", App.api.getUserId());
+            if (settings.Contains("password"))
+            {
+                settings.Remove("password");
+            }
+            settings.Add("password", App.api.getPassword());
+            settings.Save();
+
+            SaveSectionCache();
         }
 
         // Code to execute if a navigation fails
@@ -115,9 +151,7 @@ namespace BYRClient
         private void InitializePhoneApplication()
         {
             if (phoneApplicationInitialized)
-                return;
-
-            api = new ByrApi("default", "default");
+                return;            
 
             // Create the frame but don't set it as RootVisual yet; this allows the splash
             // screen to remain active until the application is ready to render.
@@ -129,6 +163,38 @@ namespace BYRClient
 
             // Ensure we don't initialize again
             phoneApplicationInitialized = true;
+        }
+
+        // Save cache of the sections to ioslated drive;
+        private void SaveSectionCache()
+        {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            foreach (string key in Models.Section.cache.Keys)
+            {
+                string iso_key = "section_cache_" + key;
+                if (!settings.Contains(iso_key))
+                {
+                    settings.Add(iso_key, Models.Section.cache[key]);
+                }/*
+                else
+                {
+                    settings.Remove(iso_key);
+                }*/
+            }
+            settings.Save();
+        }
+
+        private void LoadSectionCache()
+        {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            Dictionary<string, Models.Section> cache = Models.Section.cache;
+            foreach (string iso_key in settings.Keys)
+            {
+                if (iso_key.StartsWith("section_cache_"))
+                {
+                    cache.Add(iso_key.Replace("section_cache_", ""), (Models.Section)settings[iso_key]);
+                }
+            }
         }
 
         // Do not add any additional code to this method

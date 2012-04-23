@@ -18,6 +18,7 @@ namespace BYRClient.Models
 {
     public class Threads : ApiModel
     {
+        private int id;
         private string title;
         private string board_name;
         private List<Article> article;
@@ -28,6 +29,22 @@ namespace BYRClient.Models
 
         #region accessor      
        
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                if (value != id)
+                {
+                    id = value;
+                    NotifyPropertyChanged("Id");
+                }
+            }
+        }
+
         public string Title
         {
             get
@@ -56,6 +73,22 @@ namespace BYRClient.Models
                 {
                     board_name = value;
                     NotifyPropertyChanged("Board_name");
+                }
+            }
+        }
+
+        public Pagination Pagination
+        {
+            get
+            {
+                return pagination;
+            }
+            set
+            {
+                if (value != pagination)
+                {
+                    pagination = value;
+                    NotifyPropertyChanged("Pagination");
                 }
             }
         }
@@ -90,14 +123,15 @@ namespace BYRClient.Models
         }
 
 
-        public void GetThreadsInfo(string id, string board)
+        public void GetThreadsInfo(string id, string board, int page)
         {
             var request = new RestRequest();
             request.Resource = "threads/{boardName}/{id}.json";
 
             request.AddParameter("id", id, ParameterType.UrlSegment);
             request.AddParameter("boardName", board, ParameterType.UrlSegment);
-            App.api.Execute<Threads>(request, SetData, FailOnRequest);
+            request.AddParameter("page", page);
+            App.api.Execute<Threads>(request, SetData, FailOnRequest);            
         }
     }
 }

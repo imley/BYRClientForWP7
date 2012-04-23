@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using BYRClient.Models;
 using System.ComponentModel;
+using System.IO.IsolatedStorage;
 
 namespace BYRClient
 {
@@ -28,11 +29,17 @@ namespace BYRClient
             string username = this.NavigationContext.QueryString["username"];
 
             User user = new User();
-            user.GetUserInfo(username);
+            Action<string> failedAction = this.FailedInLogin;
+            user.GetUserInfo(username, failedAction);
             DataContext = user;
         }
 
-        protected override void OnBackKeyPress(CancelEventArgs e)
+        private void FailedInLogin(string error)
+        {
+            BackToMain();
+        }
+
+        private void BackToMain()
         {
             while (NavigationService.CanGoBack)
             {
@@ -51,6 +58,11 @@ namespace BYRClient
             }
         }
 
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            BackToMain();
+        }
+
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             this.NavigationService.Navigate(new Uri("/SectionPage.xaml?section=" + "this_can_never_be_it", UriKind.Relative));
@@ -64,11 +76,35 @@ namespace BYRClient
 
         private void Test_Click(object sender, EventArgs e)
         {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            settings.Clear();
+            settings.Save();
             //this.NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
             //Models.Section s = new Models.Section();
             //s.GetSectionInfo("Advertise");
-            Board b = new Board();
-            b.GetBoardInfo("CPP");
+            //Board b = new Board();
+            //b.GetBoardInfo("CPP");
+        }
+
+        private void OnClearClick(object sender, EventArgs e)
+        {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            List<string> deleteList = new List<string>();
+            // No remove at iteration, man.
+            foreach (string key in settings.Keys)
+            {
+                if (key.StartsWith("section_cache_"))
+                {
+                    deleteList.Add(key);
+                }
+            }
+
+            foreach (string key in deleteList)
+            {
+                settings.Remove(key);
+            }
+            settings.Save();
+            Models.Section.cache = new Dictionary<string, Models.Section>();
         }
     }
 }

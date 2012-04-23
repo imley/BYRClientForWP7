@@ -22,6 +22,10 @@ namespace BYRClient.Models
         private int face_width;
         private int face_height;
 
+        //used for login check
+        public string Code { get; set; }
+        public string Msg { get; set; }
+
         public string Id
         {
             get
@@ -69,13 +73,13 @@ namespace BYRClient.Models
 
         }
 
-        public void GetUserInfo(string id)
+        public void GetUserInfo(string id, Action<string> failed)
         {
             var request = new RestRequest();
             request.Resource = "user/query/{userId}.json";
 
             request.AddParameter("userId", id, ParameterType.UrlSegment);
-            App.api.Execute<User>(request, SetData, FailOnRequest);
+            App.api.Execute<User>(request, SetData, failed);
         }
         
         /*public void SetData(User actual)
