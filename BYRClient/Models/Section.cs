@@ -18,14 +18,17 @@ namespace BYRClient.Models
 {
     public class Section : ApiModel
     {
+        public static Dictionary<string, Models.Section> cache = new Dictionary<string, Models.Section>();
+
         private string name;
         private string description;
         private bool is_root;
         private string parent;
         private List<string> sub_section;
-        private List<string> board;
+        private List<Board> board;
 
-        public ObservableCollection<string> GUISub_section{set;get;}
+        //public ObservableCollection<string> GUISub_section{set;get;}
+        public ObservableCollection<UISectionItem> GUISub_section { set; get; }
 
         #region accessor
 
@@ -111,9 +114,51 @@ namespace BYRClient.Models
                     {
                         if (section != null)
                         {
-                            GUISub_section.Add(section);
+                            UISectionItem e = new UISectionItem();
+                            if (cache.ContainsKey(section))
+                            {
+                                e.DisplayName = cache[section].description;
+                            }
+                            else
+                            {
+                                e.DisplayName = section;
+                            }                            
+                            e.Id = section;
+                            e.Type = "section";
+                            GUISub_section.Add(e);
+                            //GUISub_section.Add(section);
                         }
                     }                            
+                }
+            }
+        }
+
+        public List<Board> Board
+        {
+            get
+            {
+                return board;
+            }
+            set
+            {
+                if (value != board)
+                {
+                    board = value;
+                    NotifyPropertyChanged("Board");
+
+                    //GUISub_section.Clear();
+                    foreach (Board b in board)
+                    {
+                        if (b != null)
+                        {
+                            UISectionItem e = new UISectionItem();
+                            e.DisplayName = b.Description;
+                            e.Id = b.Name;
+                            e.Type = "board";
+                            GUISub_section.Add(e);
+                            //GUISub_section.Add(b.Description);
+                        }
+                    }
                 }
             }
 
@@ -122,12 +167,19 @@ namespace BYRClient.Models
         #endregion
 
         public Section() {
-            GUISub_section = new ObservableCollection<string>();
+            GUISub_section = new ObservableCollection<UISectionItem>();
             sub_section = new List<string>();
         }
 
         public void GetSectionInfo(string name)
         {
+            // If the section was requested, return it directly;
+            if (cache.ContainsKey(name)) {
+                this.SetData(cache[name]);
+                return;
+            }
+
+            // Else, request it via API
             if (name == "this_can_never_be_it" || name == "")
             {
                 Section s = new Section();
@@ -139,6 +191,8 @@ namespace BYRClient.Models
                 }
 
                 this.SetData(s);
+
+                cache.Add(name, this);
             }
             else
             {
@@ -148,6 +202,7 @@ namespace BYRClient.Models
 
                 request.AddParameter("sectionName", name, ParameterType.UrlSegment);
                 App.api.Execute<Section>(request, SetData, FailOnRequest);
+                cache.Add(name, this);
             }
         }
     }

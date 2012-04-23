@@ -16,65 +16,48 @@ using System.Collections.ObjectModel;
 
 namespace BYRClient.Models
 {
-    public class Board : ApiModel
+    public class Threads : ApiModel
     {
-        private string name;
-        private string description;
-        private string section;
+        private string title;
+        private string board_name;
         private List<Article> article;
+        private Pagination pagination;
 
         public ObservableCollection<UIArticleItem> GUIArticles { set; get; }
 
 
         #region accessor      
        
-        public string Name
+        public string Title
         {
             get
             {
-                return name;
+                return title;
             }
             set
             {
-                if (value != name)
+                if (value != title)
                 {
-                    name = value;
-                    NotifyPropertyChanged("Name");
+                    title = value;
+                    NotifyPropertyChanged("Title");
                 }
             }
         }
 
-        public string Description
+        public string Board_name
         {
             get
             {
-                return description;
+                return board_name;
             }
             set
             {
-                if (value != description)
+                if (value != board_name)
                 {
-                    description = value;
-                    NotifyPropertyChanged("Description");
+                    board_name = value;
+                    NotifyPropertyChanged("Board_name");
                 }
             }
-        }
-
-        public string Section
-        {
-            get
-            {
-                return section;
-            }
-            set
-            {
-                if (value != section)
-                {
-                    section = value;
-                    NotifyPropertyChanged("Section");
-                }
-            }
-
         }
 
         public List<Article> Article
@@ -101,19 +84,20 @@ namespace BYRClient.Models
         }
         #endregion
 
-        public Board() {
+        public Threads() {
             GUIArticles = new ObservableCollection<UIArticleItem>();
             article = new List<Article>();
         }
 
 
-        public void GetBoardInfo(string boardName)
+        public void GetThreadsInfo(string id, string board)
         {
             var request = new RestRequest();
-            request.Resource = "board/{boardName}.json";
+            request.Resource = "threads/{boardName}/{id}.json";
 
-            request.AddParameter("boardName", boardName, ParameterType.UrlSegment);
-            App.api.Execute<Board>(request, SetData, FailOnRequest);
+            request.AddParameter("id", id, ParameterType.UrlSegment);
+            request.AddParameter("boardName", board, ParameterType.UrlSegment);
+            App.api.Execute<Threads>(request, SetData, FailOnRequest);
         }
     }
 }

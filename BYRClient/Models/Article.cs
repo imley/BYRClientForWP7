@@ -20,6 +20,7 @@ namespace BYRClient.Models
         private string flag;
         private string content;
         private string title;
+        private string board_name;
         private User user;
 
         #region accessor      
@@ -82,6 +83,22 @@ namespace BYRClient.Models
                 {
                     title = value;
                     NotifyPropertyChanged("Title");
+                }
+            }
+        }
+
+        public string Board_name
+        {
+            get
+            {
+                return board_name;
+            }
+            set
+            {
+                if (value != board_name)
+                {
+                    board_name = value;
+                    NotifyPropertyChanged("Board_name");
                 }
             }
         }

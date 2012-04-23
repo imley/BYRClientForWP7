@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Windows.Navigation;
 using System.ComponentModel;
+using BYRClient.Models;
 
 namespace BYRClient
 {
@@ -50,9 +51,23 @@ namespace BYRClient
 
         private void sectionList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string selectedSection;
-            selectedSection = (string)sectionList.SelectedItem;
-            this.NavigationService.Navigate(new Uri("/SectionPage.xaml?section=" + selectedSection, UriKind.Relative));
+            UISectionItem selectedItem;
+            selectedItem = (UISectionItem)sectionList.SelectedItem;
+            selectedItem.Color = "Red";
+            if (selectedItem.Type == "section")
+            {
+                this.NavigationService.Navigate(new Uri("/SectionPage.xaml?section=" + selectedItem.Id, UriKind.Relative));
+            }
+            else if (selectedItem.Type == "board")
+            {
+                this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + selectedItem.Id, UriKind.Relative));
+            }
+            /*
+            selectedItem = (UISectionItem)sectionList.SelectedItem;
+            if (selectedItem.Type == "section")
+            {
+                this.NavigationService.Navigate(new Uri("/SectionPage.xaml?section=" + selectedItem.Id, UriKind.Relative));
+            }*/
         }
     }
 }

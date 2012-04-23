@@ -53,11 +53,22 @@ namespace BYRClient
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
+            this.NavigationService.Navigate(new Uri("/SectionPage.xaml?section=" + "this_can_never_be_it", UriKind.Relative));
+        }
+
+        private void Logout_Click(object sender, EventArgs e)
+        {
+            
+            this.NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+        }
+
+        private void Test_Click(object sender, EventArgs e)
+        {
+            //this.NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
             //Models.Section s = new Models.Section();
             //s.GetSectionInfo("Advertise");
             Board b = new Board();
             b.GetBoardInfo("CPP");
-            //this.NavigationService.Navigate(new Uri("/SectionPage.xaml?section=" + "this_can_never_be_it", UriKind.Relative));
         }
     }
 }

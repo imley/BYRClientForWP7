@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -27,36 +28,59 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0" >
             <ListBox Height="605" HorizontalAlignment="Left" Margin="12,0,0,6" Name="sectionList" VerticalAlignment="Bottom" Width="438" SelectionChanged="sectionList_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid >
+                    <Border BorderBrush="White" BorderThickness="0,0,0,1">
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition MinHeight="10"/>
+                            </Grid.RowDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="80"/>
-                            <RowDefinition />
-                            <RowDefinition Height="*" MinHeight="150" />
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="90"/>
+                            </Grid.ColumnDefinitions>
 
-                        </Grid.RowDefinitions>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90" />
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="90"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="{Binding }" Foreground="LightBlue"  FontSize="40" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4"/>
-                        
-
-                    </Grid>
+                            <TextBlock Text="{Binding DisplayName}" Foreground="{Binding Color}"  FontSize="36" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4"/>
+                            <TextBlock Text="{Binding Type}" Foreground="Ivory"  FontSize="20" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="4"/>
+                            <TextBlock Text="{Binding Id}" Foreground="Gray"  FontSize="25" Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="4"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
     </Grid>
- 
+    
+    <!-- For the transition -->
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:TurnstileTransition Mode="BackwardIn"/>
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:TurnstileTransition Mode="ForwardIn"/>
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:TurnstileTransition Mode="BackwardOut"/>
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:TurnstileTransition Mode="ForwardOut"/>
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
+
     <!--Sample code showing usage of ApplicationBar-->
     <!--<phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">

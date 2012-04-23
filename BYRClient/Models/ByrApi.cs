@@ -14,10 +14,12 @@ namespace BYRClient.Models
 {
     public class ByrApi
     {
-        const string BaseUrl = "http://nforum.byr.edu.cn/byr/api";
+        //const string BaseUrl = "http://nforum.byr.edu.cn/byr/api";
+        const string BaseUrl = "http://api.byr.cn";
 
         private string _accountSid;
         private string _secretKey;
+        private string _appKey = "";
 
         
 
@@ -43,7 +45,8 @@ namespace BYRClient.Models
             var client = new RestClient();
             client.BaseUrl = BaseUrl;
             client.Authenticator = new HttpBasicAuthenticator(_accountSid, _secretKey);
-            //request.AddParameter("AccountSid", _accountSid, ParameterType.UrlSegment); // used on every request
+            //request.AddUrlSegment()
+            request.AddParameter("appkey", _appKey); // used on every request
             client.ExecuteAsync<T>(request, (response) =>
             {
                 if (response.ResponseStatus == ResponseStatus.Error)
