@@ -24,6 +24,9 @@ namespace BYRClient.Models
         private List<Article> article;
         private Pagination pagination;
 
+        // not meta data
+        private string pageStr;
+
         public ObservableCollection<UIArticleItem> GUIArticles { set; get; }
 
 
@@ -89,6 +92,28 @@ namespace BYRClient.Models
                 {
                     pagination = value;
                     NotifyPropertyChanged("Pagination");
+                    if (pagination != null)
+                    {
+                        string tmp = "";
+                        tmp = tmp + pagination.Page_current_count + " / " + pagination.Page_all_count;
+                        PageStr = tmp;
+                    }
+                }
+            }
+        }
+
+        public String PageStr
+        {
+            get
+            {
+                return pageStr;
+            }
+            set
+            {
+                if (value != pageStr)
+                {
+                    pageStr = value;
+                    NotifyPropertyChanged("PageStr");
                 }
             }
         }
@@ -113,18 +138,21 @@ namespace BYRClient.Models
                     }
                 }
             }
-
         }
         #endregion
 
         public Threads() {
             GUIArticles = new ObservableCollection<UIArticleItem>();
             article = new List<Article>();
+            PageStr = "1 / N";
         }
-
 
         public void GetThreadsInfo(string id, string board, int page)
         {
+            if (GUIArticles.Count > 0)
+            {
+                GUIArticles.Clear();
+            }
             var request = new RestRequest();
             request.Resource = "threads/{boardName}/{id}.json";
 

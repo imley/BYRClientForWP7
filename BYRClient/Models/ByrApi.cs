@@ -19,7 +19,7 @@ namespace BYRClient.Models
 
         private string _accountSid;
         private string _secretKey;
-        private string _appKey = "";
+        private const string _appKey = "";
 
         
 
@@ -62,7 +62,12 @@ namespace BYRClient.Models
                 }
                 else
                 {
-                    success(response.Data);
+                    if (response.Data == null)
+                    {
+                        failure("Some Thing Goes Wrong!");
+                        return;
+                    }
+                    success(response.Data);                    
                 }
             });
         }

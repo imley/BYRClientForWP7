@@ -28,18 +28,17 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Image Height="119" HorizontalAlignment="Left" Margin="30,13,0,0" Name="image1" Stretch="Fill" VerticalAlignment="Top" Width="124" Source="{Binding Face_url}" />
-            <StackPanel Height="108" HorizontalAlignment="Right" Margin="0,24,203,0" Name="stackPanel1" VerticalAlignment="Top" Width="80">
+            <StackPanel Height="108" HorizontalAlignment="Right" Margin="0,24,240,0" Name="stackPanel1" VerticalAlignment="Top" Width="173">
                 <TextBlock Name="textBlock1" Text="用户名: " Height="30" FlowDirection="LeftToRight" TextAlignment="Right" />
                 <TextBlock Height="30" Name="textBlock2" Text="昵称: " FlowDirection="LeftToRight" TextAlignment="Right" />
             </StackPanel>
-            <StackPanel Height="108" HorizontalAlignment="Left" Margin="259,24,0,0" Name="stackPanel2" VerticalAlignment="Top" Width="180">
+            <StackPanel Height="108" HorizontalAlignment="Left" Margin="222,24,0,0" Name="stackPanel2" VerticalAlignment="Top" Width="217">
                 <TextBlock Height="30" Name="idTextBox" Text="{Binding Id}" />
                 <TextBlock Height="30" Name="nameTextBox" Text="{Binding User_name}" />
             </StackPanel>
             <Button Content="分区浏览" Name="button1" Click="button1_Click" Margin="30,162,17,299" IsEnabled="True" IsHitTestVisible="True" Opacity="1" />
             <toolkit:Separator HorizontalAlignment="Left" Margin="79,75,0,0" Name="separator1" VerticalAlignment="Top" />
-            <Button Content="收藏夹" IsEnabled="True" IsHitTestVisible="True" Margin="30,242,17,219" Name="button2" Opacity="1" />
+            <Button Content="收藏夹" IsEnabled="True" IsHitTestVisible="True" Margin="30,242,17,219" Name="FavoriteButton" Opacity="1" Click="FavoriteButton_Click" />
         </Grid>
     </Grid>
 
@@ -69,10 +68,9 @@
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="/Images/back.png" Text="logout" Click="Logout_Click"/>
-            <shell:ApplicationBarIconButton IconUri="/Images/play.png" Text="test" Click="Test_Click"/>
+            <!--<shell:ApplicationBarIconButton IconUri="/Images/play.png" Text="test" Click="Test_Click"/>-->
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="清空分区列表缓存" Click="OnClearClick"/>
-                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+                <shell:ApplicationBarMenuItem Text="清空分区列表缓存" Click="OnClearClick"/>                
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>

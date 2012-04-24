@@ -22,6 +22,8 @@ namespace BYRClient.Models
     {
         public static Dictionary<string, Models.Section> cache = new Dictionary<string, Models.Section>();
 
+        private static readonly string[] mainSectionDescrptions = {"本站站务","北邮校园","学术科技","信息社会","人文艺术","生活时尚","休闲娱乐","体育健身","游戏对战"};
+
         private string name;
         private string description;
         private bool is_root;
@@ -130,10 +132,25 @@ namespace BYRClient.Models
                             {
                                 e.DisplayName = cache[section].description;
                             }
+                            // DIRTY-WORK
+                            // This is not a good implementation, since other section may have a name length 1;
+                            else if (section.Length == 1 && Int32.Parse(section) >= 0 && Int32.Parse(section) < 9)
+                            {
+                                try
+                                {
+                                    int sNum = Int32.Parse(section);
+                                    e.DisplayName = mainSectionDescrptions[sNum];
+                                }
+                                catch (Exception excption)
+                                {
+                                    Console.WriteLine(excption.StackTrace);
+                                    e.DisplayName = section;
+                                }
+                            }
                             else
                             {
                                 e.DisplayName = section;
-                            }                            
+                            }
                             e.Id = section;
                             e.Type = "section";
                             GUISub_section.Add(e);
@@ -201,7 +218,7 @@ namespace BYRClient.Models
                 Section s = new Section();
                 s.description = "分区列表";
                 s.name = "this_can_never_be_it";
-                s.parent = "now_exit";
+                s.parent = "now_exit";              
                 for (int i=0; i<9; i++) {
                     s.sub_section.Add(i.ToString());
                 }

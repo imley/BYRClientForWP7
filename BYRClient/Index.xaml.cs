@@ -19,6 +19,8 @@ namespace BYRClient
 {
     public partial class Index : PhoneApplicationPage
     {
+        public static User appUser;
+
         public Index()
         {
             InitializeComponent();
@@ -28,14 +30,24 @@ namespace BYRClient
         {
             string username = this.NavigationContext.QueryString["username"];
 
-            User user = new User();
-            Action<string> failedAction = this.FailedInLogin;
-            user.GetUserInfo(username, failedAction);
+            User user;
+            if(appUser != null && appUser.Id == username)
+            {
+                user = appUser;
+            }
+            else
+            {
+                user = new User();
+                Action<string> failedAction = this.FailedInLogin;
+                user.GetUserInfo(username, failedAction);
+            }            
             DataContext = user;
+            appUser = user;
         }
 
         private void FailedInLogin(string error)
         {
+            MessageBox.Show(error);
             BackToMain();
         }
 
@@ -70,15 +82,14 @@ namespace BYRClient
 
         private void Logout_Click(object sender, EventArgs e)
         {
-            
-            this.NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+            BackToMain();
         }
 
         private void Test_Click(object sender, EventArgs e)
         {
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            /*IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
             settings.Clear();
-            settings.Save();
+            settings.Save();*/
             //this.NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
             //Models.Section s = new Models.Section();
             //s.GetSectionInfo("Advertise");
@@ -105,6 +116,11 @@ namespace BYRClient
             }
             settings.Save();
             Models.Section.cache = new Dictionary<string, Models.Section>();
+        }
+
+        private void FavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("开发中，敬请期待！");
         }
     }
 }

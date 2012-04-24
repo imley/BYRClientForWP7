@@ -21,7 +21,7 @@ namespace BYRClient.Models
     public class ApiModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public Popup RelatedPop { get; set; }
+        public PopupSplash RelatedPop { get; set; }
         private bool failed = false;
         public bool Failed 
         { 
@@ -49,7 +49,7 @@ namespace BYRClient.Models
         protected void SetIsDone()
         {
             if (this.RelatedPop != null)
-                this.RelatedPop.IsOpen = false;
+                this.RelatedPop.CloseLoadingStatus();
         }
 
         public void FailOnRequest(String error)
@@ -58,7 +58,7 @@ namespace BYRClient.Models
         }
 
         public void SetData<T>(T actual)
-        {
+        {            
             foreach (var property in actual.GetType().GetProperties())
             {
                 if (!property.Name.Contains("GUI"))

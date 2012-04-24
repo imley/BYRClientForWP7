@@ -135,6 +135,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="BYRClient_2012_04_24_14_39_06.sap" />
+    <None Include="BYRClient_2012_04_24_14_46_07.sap" />
+    <None Include="BYRClient_2012_04_24_14_48_14.sap" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml" />
   </ItemGroup>

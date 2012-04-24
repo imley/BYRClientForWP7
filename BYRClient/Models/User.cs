@@ -73,6 +73,15 @@ namespace BYRClient.Models
 
         }
 
+        public void CheckUserLogin(string id, Action<string> failed, Action<User> success)
+        {
+            var request = new RestRequest();
+            request.Resource = "user/query/{userId}.json";
+
+            request.AddParameter("userId", id, ParameterType.UrlSegment);
+            App.api.Execute<User>(request, success, failed);
+        }
+
         public void GetUserInfo(string id, Action<string> failed)
         {
             var request = new RestRequest();

@@ -19,7 +19,7 @@ namespace BYRClient
 {
     public partial class BoardPage : PhoneApplicationPage
     {
-        private Popup popup;
+        private PopupSplash popup;
         private static Board currentData = null;
 
         public BoardPage()
@@ -70,36 +70,45 @@ namespace BYRClient
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            this.popup.IsOpen = false;
+            this.popup.CloseLoadingStatus();
         }
 
         private void ShowPopup()
         {
-            this.popup = new Popup();
-            this.popup.Child = new PopupSplash(); 
-            this.popup.IsOpen = true;
+            this.popup = new PopupSplash();
+            this.popup.ShowLoadingStatus();
         }
 
         private void articleList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UIArticleItem selectedItem;
             selectedItem = (UIArticleItem)boardList.SelectedItem;
-            selectedItem.Color = "Red";
-
-            this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?id=" + selectedItem.Article.Id + "&board=" + selectedItem.Article.Board_name, UriKind.Relative));            
+            // null exception can be caused by goback
+            if (selectedItem != null)
+            {
+                selectedItem.Color = "Red";
+                this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?id=" + selectedItem.Article.Id + "&board=" + selectedItem.Article.Board_name, UriKind.Relative));
+            }
         }
 
         private void OnNextPageClick(object sender, EventArgs e)
         {
-            if(currentData.Pagination.Page_current_count < currentData.Pagination.Page_all_count)
+            if (currentData.Pagination.Page_current_count < currentData.Pagination.Page_all_count)
                 this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + currentData.Name + "&page=" + (currentData.Pagination.Page_current_count + 1), UriKind.Relative));
+            else
+                MessageBox.Show("已经是最后一页了！");
             //currentData.GetBoardInfo(currentData.Name, 10, currentData.Pagination.Page_current_count+1);
         }
 
         private void OnPreviousPageClick(object sender, EventArgs e)
         {
             if (currentData.Pagination.Page_current_count > 1)
-                this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + currentData.Name + "&page=" + (currentData.Pagination.Page_current_count - 1), UriKind.Relative));
+            {
+                NavigationService.GoBack();
+                //this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + currentData.Name + "&page=" + (currentData.Pagination.Page_current_count - 1), UriKind.Relative));
+            }
+            else
+                MessageBox.Show("已经是第一页了！");
         }
     }
 }

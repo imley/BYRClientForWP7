@@ -25,6 +25,7 @@
         <StackPanel x:Name="TitlePanel" Margin="12,17,0,0" Height="Auto" VerticalAlignment="Top">
             <TextBlock x:Name="ApplicationTitle" Text="文章内容阅读" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock x:Name="PageTitle" Text="{Binding Title}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Height="Auto" MinHeight="40" Width="454" FontSize="30" TextWrapping="Wrap" />
+            <TextBlock FontSize="20" Height="30" Foreground="DarkGreen" Text="{Binding PageStr}" TextWrapping="Wrap" Width="454" TextAlignment="Right" />
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -59,7 +60,7 @@
                             <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Article.GUIPieceList}" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Grid.RowSpan="1" >
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding}" Foreground="Ivory"  FontSize="20" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding}" Foreground="Ivory"  FontSize="25" TextWrapping="Wrap"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -99,10 +100,7 @@
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="/Images/back.png" Text="上一页" Click="OnPreviousPageClick"/>
             <shell:ApplicationBarIconButton IconUri="/Images/next.png" Text="下一页" Click="OnNextPageClick"/>
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
-                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
-            </shell:ApplicationBar.MenuItems>
+            
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 

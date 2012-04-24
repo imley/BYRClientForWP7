@@ -19,7 +19,7 @@ namespace BYRClient
 {
     public partial class ThreadsPage : PhoneApplicationPage
     {
-        private Popup popup;
+        private PopupSplash popup;
         //private static Dictionary<string, Threads> currentPage = new Dictionary<string, Threads>();
         private static Threads currentData = null;
 
@@ -62,38 +62,75 @@ namespace BYRClient
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            this.popup.IsOpen = false;
+            this.popup.CloseLoadingStatus();
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
-            String parent = ((Threads)DataContext).Board_name;
-            this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + parent, UriKind.Relative));
-            e.Cancel = true;
+            //String parent = ((Threads)DataContext).Board_name;
+            //this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + parent, UriKind.Relative));
+
+            e.Cancel = BackToBoard();
         }
 
         private void ShowPopup()
         {
-            this.popup = new Popup();
-            this.popup.Child = new PopupSplash();
-            this.popup.IsOpen = true;
+           this.popup = new PopupSplash();
+           this.popup.ShowLoadingStatus();
         }
 
         private void articleList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {    
+        {
+            boardList.SelectedIndex = -1;
+        }
+
+        private bool BackToBoard()
+        {
+            while (NavigationService.CanGoBack)
+            {
+                IEnumerator<JournalEntry> list = NavigationService.BackStack.GetEnumerator();
+                list.MoveNext();
+                JournalEntry current = list.Current;
+                string uri = current.Source.ToString();
+                if (uri.StartsWith("/BoardPage.xaml"))
+                {
+                    NavigationService.GoBack();
+                    return true;
+                }
+                else
+                {
+                    NavigationService.RemoveBackEntry();
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void OnNextPageClick(object sender, EventArgs e)
         {
-            if(currentData.Pagination.Page_current_count < currentData.Pagination.Page_all_count)
-                this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?board=" + currentData.Board_name + "&id=" + currentData.Id + "&page=" + (currentData.Pagination.Page_current_count+1), UriKind.Relative));
-            //currentData.GetThreadsInfo(currentData.Id.ToString(), currentData.Board_name, currentData.Pagination.Page_current_count + 1);
+            if (currentData.Pagination.Page_current_count < currentData.Pagination.Page_all_count + 1)
+            {
+                //this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?board=" + currentData.Board_name + "&id=" + currentData.Id + "&page=" + (currentData.Pagination.Page_current_count + 1), UriKind.Relative));
+                ShowPopup();
+                currentData.RelatedPop = this.popup;
+                currentData.GetThreadsInfo(currentData.Id.ToString(), currentData.Board_name, currentData.Pagination.Page_current_count + 1);
+            }
+            else
+                MessageBox.Show("已经是最后一页了！");            
         }
 
         private void OnPreviousPageClick(object sender, EventArgs e)
         {
             if (currentData.Pagination.Page_current_count > 1)
-                this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?board=" + currentData.Board_name + "&id=" + currentData.Id + "&page=" + (currentData.Pagination.Page_current_count - 1), UriKind.Relative));
+            {
+                //this.NavigationService.Navigate(new Uri("/ThreadsPage.xaml?board=" + currentData.Board_name + "&id=" + currentData.Id + "&page=" + (currentData.Pagination.Page_current_count - 1), UriKind.Relative));
+                ShowPopup();
+                currentData.RelatedPop = this.popup;
+                currentData.GetThreadsInfo(currentData.Id.ToString(), currentData.Board_name, currentData.Pagination.Page_current_count - 1);    
+            }
+            else
+                MessageBox.Show("已经是第一页了！");
         }
     }
 }
