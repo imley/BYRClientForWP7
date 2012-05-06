@@ -19,14 +19,17 @@ namespace BYRClient.Models
 
         private string _accountSid;
         private string _secretKey;
-        private const string _appKey = "";
-
-        
+        private const string _appKey = "";        
 
         public ByrApi(string accountSid, string secretKey)
         {
             _accountSid = accountSid;
             _secretKey = secretKey;
+        }
+
+        public string getApiKey()
+        {
+            return _appKey;
         }
 
         public string getUserId()
@@ -57,8 +60,7 @@ namespace BYRClient.Models
                 if (response.ResponseStatus == ResponseStatus.Error)
                 {
                     response.ErrorException.ToString();
-                    failure(response.ErrorMessage);
-                    
+                    failure(response.ErrorMessage);                    
                 }
                 else
                 {

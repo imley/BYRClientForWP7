@@ -130,6 +130,8 @@ namespace BYRClient.Models
 
         public void GetBoardInfo(string boardName, int count, int page)
         {
+            this.pagination = new Pagination();
+            this.pagination.Page_current_count = page;
             var request = new RestRequest();
             request.Resource = "board/{boardName}.xml";
 

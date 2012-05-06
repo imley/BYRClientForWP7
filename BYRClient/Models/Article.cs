@@ -23,8 +23,27 @@ namespace BYRClient.Models
         private string title;
         private string board_name;
         private int reply_count;
+        private int post_time;
+        private string postTime;
         private User user;
+        private Attachment attachment;
+
         public ObservableCollection<string> GUIPieceList { set; get; }
+        
+        public string GUIPostTime {
+            get
+            {
+                return postTime;
+            }
+            set
+            {
+                if (value != postTime)
+                {
+                    postTime = value;
+                    NotifyPropertyChanged("GUIPostTime");
+                }
+            }
+        }
 
         #region accessor      
        
@@ -138,6 +157,23 @@ namespace BYRClient.Models
             }
         }
 
+        public int Post_time
+        {
+            get
+            {
+                return post_time;
+            }
+            set
+            {
+                if (value != post_time)
+                {
+                    post_time = value;
+                    NotifyPropertyChanged("Post_time");
+                    GUIPostTime = GetTimeFromDiff(post_time);
+                }
+            }
+        }
+
         public User User
         {
             get
@@ -154,21 +190,45 @@ namespace BYRClient.Models
             }
         }
 
+        public Attachment Attachment
+        {
+            get
+            {
+                return attachment;
+            }
+            set
+            {
+                if (value != attachment)
+                {
+                    attachment = value;
+                    NotifyPropertyChanged("Attachment");
+                }
+            }
+        }
+
         #endregion
 
         public Article()
         {
             GUIPieceList = new ObservableCollection<string>();
         }
-
-
-        public void GetUserInfo(string id)
+       
+        public static void PostArticle(string boardName, string title, string content, int reid, Action<Board> success, Action<string> failure)
         {
             var request = new RestRequest();
-            request.Resource = "user/query/{userId}.json";
+            request.Resource = ("article/{name}/post.json?appkey="+App.api.getApiKey());
 
-            request.AddParameter("userId", id, ParameterType.UrlSegment);
-            App.api.Execute<User>(request, SetData, FailOnRequest);
+            request.AddParameter("name", boardName, ParameterType.UrlSegment);
+
+            request.AddParameter("title", title, ParameterType.GetOrPost);
+            request.AddParameter("content", content, ParameterType.GetOrPost);
+            // -1 means this is a single post;
+            if (reid != -1)
+                request.AddParameter("reid", reid, ParameterType.GetOrPost);
+
+            request.Method = Method.POST;
+
+            App.api.Execute<Board>(request, success, failure);
         }
     }
 }

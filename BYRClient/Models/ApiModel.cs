@@ -23,6 +23,9 @@ namespace BYRClient.Models
         public event PropertyChangedEventHandler PropertyChanged;
         public PopupSplash RelatedPop { get; set; }
         private bool failed = false;
+
+        private readonly static DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+
         public bool Failed 
         { 
             get
@@ -69,6 +72,15 @@ namespace BYRClient.Models
                     this.SetIsDone();
                 }
             }
+        }
+
+        protected string GetTimeFromDiff(int timediff)
+        {
+            string timeStr = "";
+
+            timeStr = origin.AddSeconds(timediff).ToString("yyyy-MM-dd HH:mm:ss");
+
+            return timeStr;
         }
     }
 }

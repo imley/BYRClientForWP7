@@ -54,13 +54,16 @@ namespace BYRClient
             UISectionItem selectedItem;
             selectedItem = (UISectionItem)sectionList.SelectedItem;
             selectedItem.Color = "Red";
+
+            string boardDescription = selectedItem.DisplayName;
+
             if (selectedItem.Type == "section")
             {
                 this.NavigationService.Navigate(new Uri("/SectionPage.xaml?section=" + selectedItem.Id, UriKind.Relative));
             }
             else if (selectedItem.Type == "board")
             {
-                this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + selectedItem.Id + "&page=1", UriKind.Relative));
+                this.NavigationService.Navigate(new Uri("/BoardPage.xaml?board=" + selectedItem.Id + "&page=1&fname=" +　boardDescription, UriKind.Relative));
             }
             /*
             selectedItem = (UISectionItem)sectionList.SelectedItem;
