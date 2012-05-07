@@ -13,6 +13,7 @@ using System.Windows.Controls.Primitives;
 using BYRClient.Models;
 using System.Windows.Media.Imaging;
 using Microsoft.Phone.Controls;
+using System.IO;
 
 namespace BYRClient
 {
@@ -60,18 +61,7 @@ namespace BYRClient
 
         public void ShowImage(string imgUrl)
         {
-            Image myImage1 = new Image();
-
-            // Set the stretch property.
-            myImage1.Stretch = Stretch.Fill;
-
-            // Create source
-            BitmapImage myBitmapImage1 = new BitmapImage();
-
-            // BitmapImage.UriSource must be in a BeginInit/EndInit block
-            myBitmapImage1.UriSource = new Uri(imgUrl);
-
-            ImageControl.Source = myBitmapImage1;
+            getImageAsync(imgUrl, ImageControl);
             ImageControl.RenderTransformOrigin = new Point(0.5, 0.5);
             ImageControl.Margin = new Thickness(0, 100, 0, 0);
 
@@ -113,6 +103,43 @@ namespace BYRClient
         {
             initialCenterX = transform.CenterX;
             initialCenterY = transform.CenterY;
+        }
+
+        private void getImageAsync(string Url, Image _Img)
+        {
+            ProgressBar.IsIndeterminate = true;
+            WebClient client = new WebClient();
+            NetworkCredential cred = new NetworkCredential(App.api.getUserId(), App.api.getPassword());
+            client.Credentials = cred;
+
+            client.OpenReadAsync(new Uri(Url, UriKind.Absolute), _Img);
+
+            client.OpenReadCompleted += new OpenReadCompletedEventHandler(Client_OpenReadCompleted);
+        }
+
+        delegate void ShowDownloadCompleted(Stream _Stream, Image _Img);
+
+        void Client_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(new ShowDownloadCompleted(OpenReadCompleted), e.Result, (Image)e.UserState);
+        }
+
+        void OpenReadCompleted(Stream _Stream, Image _Img)
+        {
+            if (!_Stream.Equals(null))
+            {
+                try
+                {
+                    BitmapImage Bit = new BitmapImage();
+                    Bit.SetSource(_Stream);
+                    _Img.Source = Bit;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("图片类型不支持！");
+                }
+            }
+            ProgressBar.IsIndeterminate = false;
         }
     }
 }

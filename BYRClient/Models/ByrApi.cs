@@ -60,7 +60,8 @@ namespace BYRClient.Models
                 if (response.ResponseStatus == ResponseStatus.Error)
                 {
                     response.ErrorException.ToString();
-                    failure(response.ErrorMessage);                    
+                    failure(response.ErrorMessage);
+                    MessageBox.Show("请求出现错误");
                 }
                 else
                 {

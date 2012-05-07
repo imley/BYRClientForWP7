@@ -72,7 +72,7 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel>
-                                                <Image Height="120" Stretch="Uniform" Source="{Binding Thumbnail_small}" Width="120" Tap="OnImageTap" />
+                                                <Image CacheMode="BitmapCache" Source="{Binding Thumbnail_small}" Height="120" Stretch="Uniform" Width="120" Tap="OnImageTap" ImageFailed="OnImageFailed" ImageOpened="OnImageSuccess" />
                                             </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -114,7 +114,11 @@
             <shell:ApplicationBarIconButton IconUri="/Images/back.png" Text="上一页" Click="OnPreviousPageClick" />
             <shell:ApplicationBarIconButton IconUri="/Images/next.png" Text="下一页" Click="OnNextPageClick"/>
             <shell:ApplicationBarIconButton IconUri="/Images/replypost.png" Text="回复" Click="OnReplyPostClick"/>
-        </shell:ApplicationBar>
+
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="设置" Click="OnSettingsClick"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>        
     </phone:PhoneApplicationPage.ApplicationBar>
 
 </phone:PhoneApplicationPage>

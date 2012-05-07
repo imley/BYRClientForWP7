@@ -14,6 +14,9 @@ using System.Windows.Navigation;
 using System.ComponentModel;
 using BYRClient.Models;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media.Imaging;
+using RestSharp;
+using System.IO;
 
 namespace BYRClient
 {
@@ -22,8 +25,10 @@ namespace BYRClient
         private PopupSplash popup;
         private PopupPostControl postControl;
         private PopupImageControl imageControl;
+        private PopupSettingsControl settingsControl;
         //private static Dictionary<string, Threads> currentPage = new Dictionary<string, Threads>();
         private static Threads currentData = null;
+        private static bool showed = false;
 
         public ThreadsPage()
         {
@@ -79,6 +84,11 @@ namespace BYRClient
             else if (imageControl != null && imageControl.IsOpen)
             {
                 imageControl.IsOpen = false;
+                e.Cancel = true;
+            }
+            else if (settingsControl != null && settingsControl.IsOpen)
+            {
+                settingsControl.IsOpen = false;
                 e.Cancel = true;
             }
             else
@@ -181,10 +191,14 @@ namespace BYRClient
         private void OnImageTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Image image = (Image)sender;
-            AttFile att = (AttFile)image.DataContext;
+            AttFile att = (AttFile)image.DataContext;            
             imageControl = new PopupImageControl();
-            //imageControl.ShowImage(att.Thumbnail_middle);
-            imageControl.ShowImage(att.Url);
+
+            if (Utils.Settings.GetAppSettings().GetSetting(PopupSettingsControl.SETTINGS_SHOWBIG))
+                imageControl.ShowImage(att.Url);
+            else
+                imageControl.ShowImage(att.Thumbnail_middle);
+
             ApplicationBar.IsVisible = false;
             imageControl.closeEventHander += new EventHandler(ImageControlCloseHandler);
         }
@@ -194,5 +208,61 @@ namespace BYRClient
             ApplicationBar.IsVisible = true;
         }
 
+        private void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            Image image = (Image)sender;
+            AttFile att = (AttFile)image.DataContext;
+            //MessageBox.Show("f" + att.Thumbnail_middle);
+
+            getImageAsync(att.Thumbnail_small, image);
+
+            /*
+            // Create source
+            BitmapImage myBitmapImage1 = new BitmapImage();
+
+            // BitmapImage.UriSource must be in a BeginInit/EndInit block
+            myBitmapImage1.UriSource = new Uri("http://bbs.byr.cn/att/Photo/199022/560/small");
+            image.Source = myBitmapImage1;*/
+        }
+
+        private void getImageAsync(string Url, Image _Img)
+        {
+            WebClient client = new WebClient();
+            NetworkCredential cred = new NetworkCredential(App.api.getUserId(), App.api.getPassword());
+            client.Credentials = cred;
+
+            client.OpenReadAsync(new Uri(Url, UriKind.Absolute), _Img);
+
+            client.OpenReadCompleted += new OpenReadCompletedEventHandler(Client_OpenReadCompleted);
+        }
+
+        delegate void ShowDownloadCompleted(Stream _Stream, Image _Img);
+
+        void Client_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(new ShowDownloadCompleted(OpenReadCompleted), e.Result, (Image)e.UserState);
+        }
+
+        void OpenReadCompleted(Stream _Stream, Image _Img)
+        {
+            if (!_Stream.Equals(null)) {  
+                BitmapImage Bit = new BitmapImage();
+                Bit.SetSource(_Stream);
+                _Img.Source = Bit;
+            }
+        }
+
+        private void OnImageSuccess(object sender, RoutedEventArgs e)
+        {
+            Image image = (Image)sender;
+            AttFile att = (AttFile)image.DataContext;
+            //MessageBox.Show("s"+att.Thumbnail_middle);
+        }
+
+        private void OnSettingsClick(object sender, EventArgs e)
+        {
+            settingsControl = new PopupSettingsControl();
+            settingsControl.ShowSettings();
+        }
     }
 }

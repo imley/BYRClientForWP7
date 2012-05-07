@@ -76,6 +76,9 @@
     <Compile Include="BoardPage.xaml.cs">
       <DependentUpon>BoardPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PopupSettingsControl.xaml.cs">
+      <DependentUpon>PopupSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PopupImageControl.xaml.cs">
       <DependentUpon>PopupImageControl.xaml</DependentUpon>
     </Compile>
@@ -111,6 +114,7 @@
     <Compile Include="SectionPage.xaml.cs">
       <DependentUpon>SectionPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -118,6 +122,10 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="BoardPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PopupSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

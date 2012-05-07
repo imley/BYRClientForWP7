@@ -23,7 +23,8 @@ namespace BYRClient.Models
             get { return url; } 
             set 
             {
-                url = value.Replace("api.byr.cn/attachment", "bbs.byr.cn/att");
+                //url = value.Replace("api.byr.cn/attachment", "bbs.byr.cn/att");
+                url = value + "?appkey=" + App.api.getApiKey();
             } 
         }
         public string Size { get; set; }
@@ -32,7 +33,8 @@ namespace BYRClient.Models
             get { return small; }
             set
             {
-                small = value.Replace("api.byr.cn/attachment", "bbs.byr.cn/att");
+                //small = value.Replace("api.byr.cn/attachment", "bbs.byr.cn/att");
+                small = value + "?appkey=" + App.api.getApiKey();
             }
         }
         public string Thumbnail_middle
@@ -40,7 +42,8 @@ namespace BYRClient.Models
             get { return middle; }
             set
             {
-                middle = value.Replace("api.byr.cn/attachment", "bbs.byr.cn/att");
+                //middle = value.Replace("api.byr.cn/attachment", "bbs.byr.cn/att");
+                middle = value + "?appkey=" + App.api.getApiKey();
             }
         }
     }
